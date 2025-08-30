@@ -22,7 +22,7 @@
             <h3 class="text-2xl font-semibold text-gray-800">{{ $user->name }}</h3>
             <p class="text-xl"><span class="font-bold">Email:</span> {{ $user->email }}</p>
             <p class="text-xl"><span class="font-bold">Role:</span> {{ ucfirst($user->role ?? 'User') }}</p>
-            <p class="text-xl"><span class="font-bold">Joined:</span>{{ $user->created_at->format(' d M Y h:i A') }}</p>
+            <p class="text-xl"><span class="font-bold">Joined:</span> {{ $user->created_at->format('d M Y') }}</p>
         </div>
     </div>
 </div>

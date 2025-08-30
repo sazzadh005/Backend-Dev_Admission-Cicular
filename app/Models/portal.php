@@ -15,4 +15,10 @@ class Portal extends Model
         "Status",
         "Link",
     ];
+
+    public function applications()
+    {
+    return $this->hasMany(Application::class);
+    }
+
 }

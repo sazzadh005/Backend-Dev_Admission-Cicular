@@ -4,8 +4,33 @@
 <div class="flex justify-center mt-10">
     <div class="w-full max-w-4xl bg-white rounded-lg shadow-lg p-10">
         <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-8">
-            <h2 class="text-3xl font-bold text-gray-700 text-center md:text-left flex-1">User Profile</h2>
+            <h2 class="text-3xl font-bold text-gray-700 text-center md:text-left flex-1">{{ $circular->UniversityName }}</h2>
             <div class="flex gap-3 justify-center md:justify-end mt-4 md:mt-0">
+                @guest
+                        <a href="{{ route('login') }}" class="text-purple-600 hover:text-purple-900" title="Login to Apply">
+                                        📝 Apply
+                        </a>
+                @endguest
+
+                @if (Auth::check() && Auth::user()->role === 'user')
+                        @if(in_array($circular->id, $appliedCircularIds))
+                            <!-- User already applied -->
+                            <button class="bg-gray-400 text-white px-3 py-1 rounded cursor-not-allowed" disabled>
+                                ✅ Applied
+                            </button>
+                        @else
+                            <!-- User not applied yet -->
+                            <form action="{{ route('application.store') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="portal_id" value="{{ $circular->id }}">
+                                <button type="submit" class="bg-purple-600 text-white px-3 py-1 rounded">
+                                    📝 Apply
+                                </button>
+                            </form>
+                        @endif
+                @endif
+                @if (Auth::check() && Auth::user()->role === 'admin')
+                
                 <a href="{{ route('circulars.edit', $circular->id) }}" class="py-2 px-5 bg-blue-600 text-lg font-bold text-white rounded-lg hover:bg-blue-700 transition">
                     <i class="bi bi-pencil-square"></i> Edit
                 </a>
@@ -16,6 +41,9 @@
                         <i class="bi bi-trash"></i> Delete
                     </button>
                 </form>
+                
+                @endif
+                
             </div>
         </div>
         <div class="flex flex-col items-center space-y-4">

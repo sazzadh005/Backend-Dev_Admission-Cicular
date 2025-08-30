@@ -39,10 +39,9 @@ class UserController extends Controller
         ]);
         
         $validate['password'] = Hash::make($request->password);
-        
         User::create($validate);
 
-        return redirect()->route('circulars.index')->with('success', 'User created successfully.');
+        return redirect()->route('login')->with('success', 'User created successfully, Now you can login.');
     }
 
     /**

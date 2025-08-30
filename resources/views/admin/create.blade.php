@@ -3,17 +3,17 @@
 @section('content')
 <div class="max-w-md mx-auto mt-10 bg-white p-8 rounded shadow">
     <h2 class="text-2xl font-bold mb-6 text-center">Create User</h2>
-    {{-- Show Validation Errors --}}
-    @if ($errors->any())
-        <div class="mb-4 bg-red-100 text-red-700 p-4 rounded">
-            <ul class="list-disc list-inside">
+      @if ($errors->any())
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <strong class="font-bold">Oops!</strong>
+            <span class="block sm:inline">Please fix the following errors:</span>
+            <ul class="mt-2 list-disc list-inside">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
             </ul>
         </div>
     @endif
-
     <form action="{{ route('users.store') }}" method="POST" class="space-y-6">
         @csrf
         <div>

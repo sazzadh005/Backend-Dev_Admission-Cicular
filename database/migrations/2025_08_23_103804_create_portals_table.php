@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('UniversityName');
             $table->string('ProgramName');
-            $table->string('Description')->nullable();
+            $table->longText('Description')->nullable();
             $table->string('Link')->nullable();
             $table->date('ApplicationDeadline')->nullable();
             $table->enum("Status", ["Active", "Inactive"])->default("Active");

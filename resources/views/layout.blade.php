@@ -20,13 +20,29 @@
             <a class="text-white font-bold text-xl tracking-wide" href="{{ route('circulars.index') }}">Admission Circular Manager</a>
             <div class="ml-auto flex items-center space-x-4">
                 @auth
-                    {{-- Links for logged-in users --}}
+                    {{-- Profile --}}
                     <a href="{{ route('users.show', $user->id) }}" class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-600">
                         Profile
                     </a>
-                    <a href="{{ route('circulars.create') }}" class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-600">
-                        Create Post
-                    </a>
+
+                    {{-- Applications --}}
+                    @if ($user->role === 'admin')
+                        <a href="{{ route('applications.index') }}" class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-600">
+                            Applications
+                        </a>
+                        <a href="{{ route('admin.dashboard') }}" class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-600">
+                            Dashboard
+                        </a>
+                        <a href="{{ route('circulars.create') }}" class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-600">
+                            Create Post
+                        </a>
+                    @else
+                        <a href="{{ route('applications.list') }}" class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-600">
+                            My Applications
+                        </a>
+                    @endif
+
+                    {{-- Logout --}}
                     <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                         @csrf
                         <button type="submit" class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-600">
@@ -34,7 +50,7 @@
                         </button>
                     </form>
                 @else
-                    {{-- Links for guests (not logged in) --}}
+                    {{-- Guest Links --}}
                     <a href="{{ route('login') }}" class="text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-600">
                         Log In
                     </a>
@@ -45,13 +61,13 @@
             </div>
         </div>
     </nav>
-    @show
+    
 
     <div class="flex flex-1">
         <aside class="hidden md:block w-64 bg-white shadow min-h-screen py-8">
             <ul class="space-y-2 px-4">
                 @auth
-                    {{-- Links for logged-in users --}}
+                    {{-- Admin Sidebar --}}
                     @if ($user->role === 'admin')
                         <li>
                             <a href="{{ route('admin.dashboard') }}"
@@ -67,8 +83,15 @@
                                 Users
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ route('applications.index') }}"
+                               class="block px-4 py-2 rounded-lg font-medium transition
+                               {{ request()->is('applications') ? 'bg-blue-100 text-blue-800' : 'text-blue-700 hover:bg-blue-50' }}">
+                                Applications
+                            </a>
+                        </li>
                     @else
-                        {{-- Profile link for regular users --}}
+                        {{-- User Sidebar --}}
                         <li>
                             <a href="{{ route('users.show', $user->id) }}"
                                class="block px-4 py-2 rounded-lg font-medium transition
@@ -76,8 +99,16 @@
                                 My Profile
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ route('applications.list') }}"
+                               class="block px-4 py-2 rounded-lg font-medium transition
+                               {{ request()->is('applications/list') ? 'bg-blue-100 text-blue-800' : 'text-blue-700 hover:bg-blue-50' }}">
+                                My Applications
+                            </a>
+                        </li>
                     @endif
-                    {{-- Circulars link for all logged-in users --}}
+
+                    {{-- Circulars Link --}}
                     <li>
                         <a href="{{ route('circulars.index') }}"
                            class="block px-4 py-2 rounded-lg font-medium transition
@@ -86,7 +117,7 @@
                         </a>
                     </li>
                 @else
-                    {{-- Links for guests (not logged in) --}}
+                    {{-- Guest Sidebar --}}
                     <li>
                         <a href="{{ route('login') }}"
                            class="block px-4 py-2 rounded-lg font-medium transition
@@ -101,9 +132,10 @@
                             Register
                         </a>
                     </li>
-
                 @endauth
             </ul>
+
+            {{-- Admin-only Settings --}}
             @if(auth()->check() && auth()->user()->role === 'admin')
             <ul class="px-4 mt-auto">
                 <li>
@@ -118,7 +150,7 @@
         </aside>
         
         <main class="flex-1 p-8">
-            {{-- Session alerts section --}}
+            {{-- Alerts --}}
             @if (session('success'))
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
                     {{ session('success') }}
@@ -133,6 +165,7 @@
             @yield('content')
         </main>
     </div>
+
     <footer class="bg-blue-700 text-white text-center py-4 mt-auto">
         &copy; {{ date('Y') }} Admission Circular Manager. All rights reserved.
     </footer>

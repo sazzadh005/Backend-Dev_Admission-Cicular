@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
 class AdminMiddleware
 {
@@ -13,17 +14,18 @@ class AdminMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-   public function handle(Request $request, Closure $next): Response
+   public function handle(Request $request, Closure $next, ...$roles): Response
 {
-    if (auth()->check() && auth()->user()->role === 'admin') {
-        return $next($request);
-    }else if(auth()->check() && auth()->user()->role === 'user') {
-        return redirect()->route('users.show', [ auth()->id()])->with('success', 'You are logged in as a user.');
-    }
+    if (!Auth::check()) {
+            return redirect('login')->with('error', 'You do not have admin access.');
+        }
 
-    // Redirect to the 'users.show' route, passing the user's ID as a parameter.
-    return redirect()->route('login')
-        ->with('error', 'You do not have admin access.');
+        if (!in_array(Auth::user()->role, $roles)) {
+            abort(403, 'Unauthorized')->with('error', 'You do not have admin access.');
+        }
+
+        return $next($request);
+        
 }
 
 }
